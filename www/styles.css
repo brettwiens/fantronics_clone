@@ -1,0 +1,110 @@
+.info-box {
+  background: linear-gradient(135deg, #cbcbcb, #3a3a3a);
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+h4 {
+  color: white;
+  text-align: center;
+  font-size: 22px;  /* Slightly larger */
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 8px 8px 0 0; 
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: adds a semi-transparent dark background */
+  text-shadow: 
+    -2px -2px 2px black, 
+     2px -2px 2px black, 
+    -2px  2px 2px black, 
+     2px  2px 2px black;
+}
+.scoring-box {
+  background: linear-gradient(135deg, #1b1b1b, #1a1a1a);
+  color: lightgrey;
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 15vw;
+}
+.score-box {
+  background: linear-gradient(135deg, #1e1e1e, #3a3a3a);
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 15px;
+  padding: 20px;
+  width: 99%;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.4);
+}
+
+.score {
+  font-size: 280px;
+  font-weight: bold;
+  color: #ffcc00;
+}
+.score-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100%; /* Ensures full column height */
+}
+/* Title styling - white text with background */
+.score-title {
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 8px 8px 0 0; /* Rounded corners on top */
+  text-shadow: 
+    -2px -2px 0 black, 
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black;
+}
+
+
+
+.venue{
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+}
+.team-name{
+  font-size: 30px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.game-time{
+  font-size: 16px;
+  font-weight: bold;
+  color: #CFCCCFC;
+}
+.time_remaining{
+  font-size: 40px;
+  font-weight: bold;
+  color: #600909;
+}
+.period{
+  font-size: 40px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.power_play{
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000;
+}
+.strength{
+  font-size: 22px;
+  font-weight: bold;
+  color: #000000;
+}
