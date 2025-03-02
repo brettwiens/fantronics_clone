@@ -23,6 +23,8 @@ fluidPage(
     ")),
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
     ),
-  
+    fluidRow(
+      shiny::selectizeInput(inputId = 'teamSelect', choices = unique(nhl_teams$Short_Name), label = "Select Team")
+    ),
   uiOutput(outputId = 'main_ui')
 )
