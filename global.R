@@ -1,3 +1,5 @@
+install.packages('httr')
+
 library(httr)
 library(jsonlite)
 library(dplyr)
@@ -6,9 +8,10 @@ library(lubridate)
 
 source('www/support_functions.R')
 source('www/ui_generator.R')
+source('www/team_stuff.R')
 # source('www/styles.css')
 
-team <- 'TOR'
+team <- 'CGY'
 time_zone <- Sys.timezone()
 
 # Get today's date in NHL API format
@@ -89,7 +92,7 @@ get_current_game <- function(boxscore, time_zone){
     home_strength <- NULL
     away_strength <- NULL
   } else {
-    period <- ifelse(game_data$clock$Intermission, "", paste('Period:', game_data$periodDescriptor$number))
+    period <- ifelse(!is.null(game_data$clock$Intermission), "", paste('Period:', game_data$periodDescriptor$number))
     home_strength <- game_data$situation$homeTeam$strength
     away_strength <- game_data$situation$awayTeam$strength
     

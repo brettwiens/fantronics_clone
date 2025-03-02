@@ -21,16 +21,20 @@ server <- function(input, output, session) {
   
   observe({
     req(session$userData$current_schedule$current_game_data$local_time)
-    
-    time_diff <- as.numeric(difftime(as.POSIXct(session$userData$current_schedule$current_game_data$local_time, format = "%Y-%m-%d %H:%M:%s %Z"), Sys.time(), units = 'secs')) * 1000
-    
+
+    time_diff <- max(0, as.numeric(difftime(as.POSIXct(session$userData$current_schedule$current_game_data$local_time, format = "%Y-%m-%d %H:%M:%s %Z"), Sys.time(), units = 'secs')) * 1000)
+    print(session$userData$current_schedule$current_game_data$game_time)
     if (time_diff > 0) {
       # current_schedule <- current_schedule_game(team, time_zone)
-      time_wait <- min(time_diff, 10000)
+      time_wait <- max(time_diff, 10000)
       output$seconds_to_game <- renderText(convert_milliseconds(time_diff))
       invalidateLater(time_wait, session)
       session$userData$current_schedule <- current_schedule_game(team, time_zone)
       print(paste('Waiting', time_wait / 1000, 'seconds'))
+    } else if (session$userData$current_schedule$current_game_data$game_time == 'Final') {
+      time_wait <- 10000000
+      invalidateLater(time_wait, session)
+      print(paste('Game Complete: Waiting', time_wait / 1000, 'seconds'))
     } else {
       # current_schedule <- current_schedule_game(team, time_zone)
       invalidateLater(10000, session)

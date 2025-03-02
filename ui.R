@@ -25,4 +25,4 @@ fluidPage(
     ),
   
   uiOutput(outputId = 'main_ui')
-      )
+)

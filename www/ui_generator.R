@@ -35,22 +35,22 @@ generate_ui <- function(session){
                               # div(class = 'team-name', current_schedule$game_information$game_id),
                               hr(),
                               div(class = 'game-time', paste(session$userData$current_schedule$game_information$game_time, format(Sys.time(), '%Z'))),
-                              conditionalPanel(
-                                condition = "session$userData$current_schedule$current_game_data$game_time == 'Scheduled'",
-                                div(
-                                  br(),
-                                  div(class = 'game-time', textOutput(outputId = 'seconds_to_game'))
-                                ) 
-                              ),
                               hr(), 
-                              div(class = 'time_remaining', session$userData$current_schedule$current_game_data$game_time),
-                              div(class = 'period', session$userData$current_schedule$current_game_data$period),
-                              div(class = 'power_play', session$userData$current_schedule$current_game_data$power_play),
-                              div(class = 'strength', ifelse(!is.null(session$userData$current_schedule$current_game_data$home_strength), 
-                                                             paste(session$userData$current_schedule$current_game_data$away_strength, "-", 
-                                                                   session$userData$current_schedule$current_game_data$home_strength), "")
-                              ))
-                        )),
+
+                              if (session$userData$current_schedule$current_game_data$local_time < Sys.time()) {
+                                tagList(
+                                  div(class = 'time_remaining', session$userData$current_schedule$current_game_data$game_time),
+                                  div(class = 'period', session$userData$current_schedule$current_game_data$period),
+                                  div(class = 'power_play', session$userData$current_schedule$current_game_data$power_play),
+                                  div(class = 'strength', ifelse(!is.null(session$userData$current_schedule$current_game_data$home_strength), 
+                                                                 paste(session$userData$current_schedule$current_game_data$away_strength, "-", 
+                                                                       session$userData$current_schedule$current_game_data$home_strength), "")
+                                  )
+                                )
+                              } else {
+                                div(class = 'period', "Game Scheduled")
+                              }
+                        ))),
                  column(3,"")),
                fluidRow(
                  column(6, 
