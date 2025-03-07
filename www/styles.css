@@ -50,6 +50,18 @@ h4 {
   font-weight: bold;
   color: #ffcc00;
 }
+.mlb_score {
+  font-size: 200px;
+  color: yellow;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+    text-shadow: 
+    -5px -5px 0 black, 
+     5px -5px 0 black, 
+    -5px  5px 0 black, 
+     5px  5px 0 black;
+}
+
 .score-container {
   display: flex;
   justify-content: center; /* Centers horizontally */
@@ -62,7 +74,7 @@ h4 {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
-  padding: 10px;
+  padding: 5px;
   border-radius: 8px 8px 0 0; /* Rounded corners on top */
   text-shadow: 
     -2px -2px 0 black, 
@@ -107,4 +119,60 @@ h4 {
   font-size: 22px;
   font-weight: bold;
   color: #000000;
+}
+hr {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+br {
+  display: block;
+  margin: 1px 0;
+}
+
+/* Style the selectize input box */
+.selectize-input {
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid white !important;
+}
+
+/* Style the text inside the input box */
+.selectize-input input {
+  color: white !important;
+}
+
+/* Style the dropdown list */
+.selectize-dropdown {
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid white !important;
+}
+
+/* Style the dropdown options */
+.selectize-dropdown .option {
+  background-color: black !important;
+  color: white !important;
+}
+
+/* Highlight hovered option */
+.selectize-dropdown .option:hover {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Highlight the selected option */
+.selectize-dropdown .selected {
+  background-color: gray !important;
+  color: white !important;
+}
+
+/* Change label text color */
+.control-label {
+  color: grey !important;
+    text-shadow: 
+    -2px -2px 0 black, 
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black;
+  
 }

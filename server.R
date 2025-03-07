@@ -9,68 +9,138 @@
 
 library(shiny)
 
-# Define server logic required to draw a histogram
 server <- function(input, output, session) {
-  
-  refresh_trigger <- reactiveVal(0)
-  
-  observeEvent(input$teamSelect, {
-    session$userData$team <- input$teamSelect
-    session$userData$current_schedule <- current_schedule_game(session$userData$team, time_zone)
-    # invalidateLater(1, session)
-    refresh_trigger(refresh_trigger() + 1)
-    output$main_ui <- renderUI(generate_ui(session))
-  })
-  
-  session$userData$current_schedule <- current_schedule_game(session$userData$team, time_zone)
-  
-  observe({
-    print("Getting Updates")
-    session$userData$current_schedule <- current_schedule_game(session$userData$team, time_zone)
-  })
-  
-  observe({
-    req(session$userData$current_schedule$current_game_data$local_time)
 
-    refresh_trigger()
+  session$userData <- reactiveValues(team = NULL, current_NHL_game = NULL)
+  # time_wait <- reactiveVal(0)
+  # refresh_trigger <- reactiveVal(0)
+  # refresh_interval <- reactiveVal(10000)  # Default to 10 seconds
+  
+  observeEvent(input$league_select, {
+    if (input$league_select == 'NHL') {
+      output$team_select <- renderUI(shiny::selectizeInput(inputId = 'NHL_team_select',
+                                                           choices = unique(nhl_teams$Short_Name),
+                                                           label = "Select Team",
+                                                           selected = 'CGY'))
+    }
+  })
+    # } else if (input$league_select == 'NBA') {
+    #   output$team_select <- renderUI(shiny::selectizeInput(inputId = 'NBA_team_select',
+    #                                                        choices = unique(nba_teams$Short_Name),
+    #                                                        label = "Select Team",
+    #                                                        selected = 'TOR'))
+    # } else if (input$league_select == 'MLB') {
+    #   output$team_select <- renderUI(shiny::selectizeInput(inputId = 'MLB_team_select',
+    #                                                        choices = unique(mlb_teams$Short_Name),
+    #                                                        label = "Select Team",
+    #                                                        selected = 'TOR'))
+    # } else if  (input$league_select == 'CFL') {
+    #   output$team_select <- renderUI(shiny::selectizeInput(inputId = 'CFL_team_select',
+    #                                                        choices = unique(cfl_teams$Short_Name),
+    #                                                        label = "Select Team",
+    #                                                        selected = 'CGY'))
+    # }
+  
+  # time_wait <- 10000
+  # auto_refresh <- reactiveTimer(time_wait)  # Dynamic refresh interval
+  #### NHL Server ####
+
+  observeEvent(input$NHL_team_select, {
+    session$userData$team <- input$NHL_team_select
+    session$userData$current_NHL_game <- current_NHL_game(session$userData$team, time_zone)
+    print(paste("Team:", input$NHL_team_select))
+    # invalidateLater(1, session)
+    # refresh_trigger(refresh_trigger() + 1)
+    output$main_ui <- renderUI(generate_nhl_ui(session))
     
-    time_diff <- max(0, as.numeric(difftime(as.POSIXct(session$userData$current_schedule$current_game_data$local_time, format = "%Y-%m-%d %H:%M:%s %Z"), Sys.time(), units = 'secs')) * 1000)
-    print(session$userData$current_schedule$current_game_data$game_time)
+  })
+
+  # observeEvent(input$MLB_team_select, {
+  #   session$userData$team <- input$MLB_team_select
+  #   session$userData$current_MLB_game <- current_MLB_game(session$userData$team, time_zone)
+  #   # invalidateLater(1, session)
+  #   refresh_trigger(refresh_trigger() + 1)
+  #   output$main_ui <- renderUI(generate_mlb_ui(session))
+  # })
+
+  # observe({
+  #   req(input$league_select == 'NHL')
+  #   req(input$team_select %in% nhl_teams$Short_Name)
+  #   print("Getting Updates")
+  #   refresh_trigger(refresh_trigger() + 1)
+  #   session$userData$current_NHL_game <- current_NHL_game(session$userData$team, time_zone)
+  # })
+
+  # observe({
+  #   req(input$league_select == 'MLB')
+  #   req(input$MLB_team_select)
+  #   print("Getting Updates")
+  #   refresh_trigger(refresh_trigger() + 1)
+  #   session$userData$current_MLB_game <- current_MLB_game(session$userData$team, time_zone)
+  # })
+
+  observe({
+    req(input$NHL_team_select %in% nhl_teams$Short_Name)
+
+
+    
+    # Compute time until next game
+    time_diff <- max(0, as.numeric(difftime(
+      as.POSIXct(session$userData$current_NHL_game$current_game_data$local_time, 
+                 format = "%Y-%m-%d %H:%M:%S %Z"), 
+      Sys.time(), 
+      units = 'secs')) * 1000)
+    
     if (time_diff > 0) {
-      # current_schedule <- current_schedule_game(team, time_zone)
+      # Future game: Set refresh interval
       time_wait <- max(time_diff, 10000)
       output$seconds_to_game <- renderText(convert_milliseconds(time_diff))
       
-      isolate({
-      invalidateLater(time_wait, session)
-      })
+      # isolate({ invalidateLater(time_wait, session) })
+      # refresh_interval(time_wait)
+      print(paste('Scheduled, waiting', convert_milliseconds(time_wait)))
+      auto_refresh <- reactiveTimer(time_wait)
+      auto_refresh()
       
-      session$userData$current_schedule <- current_schedule_game(session$userData$team, time_zone)
-      print(paste('Waiting', time_wait / 1000, 'seconds'))
-    } else if (session$userData$current_schedule$current_game_data$game_time == 'Final') {
+    } else if (session$userData$current_NHL_game$game_information$game_state == 'FINAL') {
+      # Game finished: Long refresh interval
       time_wait <- 10000000
-      
-      isolate({
-        invalidateLater(time_wait, session)
-      })
-      
+      # isolate({ invalidateLater(time_wait, session) })
+      # refresh_interval(time_wait)
       print(paste('Game Complete: Waiting', time_wait / 1000, 'seconds'))
-    } else {
-      # current_schedule <- current_schedule_game(team, time_zone)
-      time_wait <- 10000 # 10 seconds
+      auto_refresh <- reactiveTimer(time_wait)
+      auto_refresh()
+    } else if (session$userData$current_NHL_game$game_information$game_state == 'LIVE') {
+      # Live game: Refresh every 10 seconds
+      time_wait <- 10000  # 10 seconds
+      # isolate({ invalidateLater(time_wait, session) })
+      # refresh_interval(time_wait)
+      print(paste('Game Active: Refresh in', time_wait / 1000, 'seconds'))
+      auto_refresh <- reactiveTimer(time_wait)
+      auto_refresh()
+      # Get current game data
+      session$userData$current_NHL_game <- current_NHL_game(session$userData$team, time_zone)
       
-      isolate({
-        invalidateLater(time_wait, session)
-      })
-      
-      session$userData$current_schedule <- current_schedule_game(session$userData$team, time_zone)
-      print('Game on, waiting 10 seconds')
-      # print(current_schedule_game())
+      # Update UI
+      output$main_ui <- renderUI(generate_nhl_ui(session))
     }
-    
-    output$main_ui <- renderUI(generate_ui(session))
-    
   })
-  
+
+
+  #### CFL SERVER ####
+
+
+
+  #### MLB SERVER ####
+
+
+
+  #### NBA SERVER ####
+
+
+
+  #### ####
 
 }
+
+

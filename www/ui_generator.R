@@ -1,7 +1,7 @@
 generate_ui <- function(session){
   return(
     div(
-      br(),
+      hr(),
       fluidRow(
         # column(1,""),
         column(4, class = "score-container", 

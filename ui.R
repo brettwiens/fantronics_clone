@@ -24,7 +24,19 @@ fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
     ),
     fluidRow(
-      shiny::selectizeInput(inputId = 'teamSelect', choices = unique(nhl_teams$Short_Name), label = "Select Team")
+      column(2, 
+             shiny::selectizeInput(inputId = 'league_select', choices = c('NHL','NBA','MLB','CFL'), label = "League", selected = 'NHL')),
+      column(2,
+             shiny::uiOutput(outputId = 'team_select')),
+      column(6,""),
+      column(1,
+             shiny::textOutput(outputId = 'Refreshed')
+             ),
+      column(1,
+             column(11,""),
+             column(1, 
+                    br(),
+             tags$img(src = 'BW.png', height = '50px')))
     ),
   uiOutput(outputId = 'main_ui')
 )
